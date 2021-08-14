@@ -1,0 +1,32 @@
+version: '3.6'
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: ./docker/Dockerfile
+    environment:
+      - SQLALCHEMY_DB_URL=postgresql://postgres:mysecret@database:5432/stay-safe
+      - PYTHONPATH=.
+      - SECRET_KEY=Ztt9A2h97bRtVE4Mot9aVA
+    depends_on:
+      - db
+    container_name: api-server
+    volumes:
+      - ./src:/app
+      - "/etc/localtime:/etc/localtime:ro"
+    ports:
+      - "8083:8083"
+    restart: on-failure
+  db:
+    environment:
+      POSTGRES_USER: postgres 
+      POSTGRES_PASSWORD: mysecret
+      POSTGRES_DB: devgrid
+    image: postgres
+    container_name: database
+    volumes:
+      - ./postgres-data:/var/lib/postgresql/data
+      - "/etc/localtime:/etc/localtime:ro"
+    ports:
+     - 5432:5432
