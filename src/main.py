@@ -2,11 +2,11 @@ from flask import Flask
 from flask_cors import CORS
 
 from settings import logger, load_configuration
-from views.users import users_blueprint 
+from views.weather import weathers_blueprint
 
 
 app = Flask(__name__)
-app.register_blueprint(users_blueprint)
+app.register_blueprint(weathers_blueprint)
 
 CORS(app, automatic_options=True)
 
