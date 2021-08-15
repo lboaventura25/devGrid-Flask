@@ -6,9 +6,10 @@ services:
       context: .
       dockerfile: ./docker/Dockerfile
     environment:
-      - SQLALCHEMY_DB_URL=postgresql://postgres:mysecret@database:5432/stay-safe
+      - SQLALCHEMY_DB_URL=postgresql://postgres:mysecret@database:5432/
       - PYTHONPATH=.
       - SECRET_KEY=Ztt9A2h97bRtVE4Mot9aVA
+      - API_KEY=9b6910931d9c1bc8bddd462f779fa25d
     depends_on:
       - db
     container_name: api-server
