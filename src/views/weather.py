@@ -10,7 +10,7 @@ CORS(weathers_blueprint)
 
 @weathers_blueprint.route('/weather', methods=['GET'])
 def get_weathers():
-    max_number = int(request.args.get('max'))
+    max_number = int(request.args.get('max', 5))
 
     response, status = controller.get_all_weathers(max_number)
 

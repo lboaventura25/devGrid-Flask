@@ -11,6 +11,7 @@ def get_all_weathers(max_number: int) -> tuple:
     if code == 200:
         weathers = [weather.to_dict() for weather in result]
         return weathers, code
+
     return result, code
 
 

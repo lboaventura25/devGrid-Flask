@@ -2,7 +2,6 @@ import os
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from sqlalchemy.sql.expression import select
 
 from settings import logger
 
@@ -29,7 +28,7 @@ def insert_one(element):
 
 def get_all(model, max_number):
     try:
-        data = session.query(model).limit(max(max_number, 5)).all()
+        data = session.query(model).limit(max_number).all()
 
         return data, 200
     except Exception as error:
