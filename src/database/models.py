@@ -17,10 +17,11 @@ class Weather(Base):
                           server_default=now(),
                           nullable=False)
 
-    def __init__(self, city_name, temperature, description):
+    def __init__(self, city_name, temperature, description, created_date=None):
         self.city_name = city_name
         self.temperature = temperature
         self.description = description
+        self.created_date = created_date
 
     def to_dict(self):
         weather = {
