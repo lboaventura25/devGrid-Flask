@@ -13,10 +13,10 @@ Session = sessionmaker(db)
 session = Session()
 
 
+# INSERT INTO weather (city_name, temperature, description) 
+# VALUES ('paris', 18.13, 'clean sky') 
 def insert_one(element):
     try:
-        # INSERT INTO weather (city_name, temperature, description) 
-        # VALUES ('paris', 18.13, 'clean sky') 
         session.add(element)
         session.commit()
 
@@ -28,9 +28,9 @@ def insert_one(element):
         return 'Something went wrong', 500
 
 
+# SELECT * FROM weather w ORDER BY w.created_date DESC LIMIT 5
 def get_all(model, max_number):
     try:
-        # SELECT * FROM weather w ORDER BY w.created_date DESC LIMIT 5
         data = session.query(model) \
             .order_by(model.created_date.desc()) \
             .limit(max_number) \
@@ -44,9 +44,9 @@ def get_all(model, max_number):
         return 'Something went wrong', 500
 
 
+ # SELECT * FROM weather w WHERE w.city_name = "paris"
 def get_one(model, identifier):
     try:
-        # SELECT * FROM weather w WHERE w.city_name = "paris"
         data = session.query(model).filter_by(city_name=identifier).first()
 
         if data:
@@ -60,9 +60,32 @@ def get_one(model, identifier):
         return 'Something went wrong', 500
 
 
+# UPDATE weather 
+# SET temperature = 20.90, description = 'clean sky' 
+# WHERE city_name = 'paris'
+def update(model, identifier, params):
+    try:
+        data = session.query(model).filter_by(city_name=identifier).first()
+        session.commit()
+
+        if data:
+            for param in params:
+                setattr(data, param, params[param])
+        
+            session.commit()
+            return data, 200
+
+        return "Not Found!", 404
+    except Exception as error:
+        logger.error(error)
+        session.rollback()
+
+        return 'Something went wrong', 500
+
+
+# DELETE FROM weather w WHERE w.city_name = "paris"
 def delete(model, identifier):
     try:
-        # DELETE FROM weather w WHERE w.city_name = "paris"
         data = session.query(model).filter_by(city_name=identifier).first()
         session.delete(data)
         session.commit()
