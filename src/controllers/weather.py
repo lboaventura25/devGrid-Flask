@@ -4,6 +4,7 @@ from sqlalchemy.sql.functions import now
 from database.models import Weather
 from database import db
 from utils.request_weather_api import request_weather_api
+from utils.date_plus_five_minutes import date_plus_five_minutes
 
 
 def get_all_weathers(max_number: int) -> tuple:
@@ -24,7 +25,7 @@ def get_weather_by_city_name(city_name: str) -> tuple:
 
         created_date = weather['created_date']
 
-        created_date_plus_five_minutes = created_date + timedelta(minutes=5)
+        created_date_plus_five_minutes = date_plus_five_minutes(created_date)
         current_time = datetime.now()
 
         if created_date_plus_five_minutes > current_time:
@@ -53,7 +54,8 @@ def get_weather_by_city_name(city_name: str) -> tuple:
         new_weather = Weather(
             city_name,
             temperature,
-            description
+            description,
+            datetime.now()
         )
 
         db.insert_one(new_weather)
