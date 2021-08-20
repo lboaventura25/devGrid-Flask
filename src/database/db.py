@@ -15,6 +15,8 @@ session = Session()
 
 def insert_one(element):
     try:
+        # INSERT INTO weather (city_name, temperature, description) 
+        # VALUES ('paris', 18.13, 'clean sky') 
         session.add(element)
         session.commit()
 
@@ -28,7 +30,11 @@ def insert_one(element):
 
 def get_all(model, max_number):
     try:
-        data = session.query(model).limit(max_number).all()
+        # SELECT * FROM weather w ORDER BY w.created_date DESC LIMIT 5
+        data = session.query(model) \
+            .order_by(model.created_date.desc()) \
+            .limit(max_number) \
+            .all()
 
         return data, 200
     except Exception as error:
@@ -40,6 +46,7 @@ def get_all(model, max_number):
 
 def get_one(model, identifier):
     try:
+        # SELECT * FROM weather w WHERE w.city_name = "paris"
         data = session.query(model).filter_by(city_name=identifier).first()
 
         if data:
@@ -55,6 +62,7 @@ def get_one(model, identifier):
 
 def delete(model, identifier):
     try:
+        # DELETE FROM weather w WHERE w.city_name = "paris"
         data = session.query(model).filter_by(city_name=identifier).first()
         session.delete(data)
         session.commit()
