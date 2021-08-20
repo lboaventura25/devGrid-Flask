@@ -1,8 +1,9 @@
 from datetime import datetime, timedelta
-import os
-import requests as api
+
+from sqlalchemy.sql.functions import now
 from database.models import Weather
 from database import db
+from utils.request_weather_api import request_weather_api
 
 
 def get_all_weathers(max_number: int) -> tuple:
@@ -28,35 +29,35 @@ def get_weather_by_city_name(city_name: str) -> tuple:
 
         if created_date_plus_five_minutes > current_time:
             return weather, code
-        
-        db.delete(Weather, city_name)
 
+    try:
+        response = request_weather_api(city_name)
+        status_response = int(response['cod'])
 
-    headers = {
-        "Accept": "*/*",
-        "Content-Type": "application/json"
-    }
+        if status_response == 404:
+            return "Sorry. We couldn't find the specified city.", 404
 
-    base_url = 'https://api.openweathermap.org/data/2.5/weather'
-    api_key = os.environ.get('API_KEY')
-    url_api = f'{base_url}?q={city_name}&appid={api_key}&units=metric'
+        description = response['weather'][0]['description']
+        temperature = response['main']['temp']
 
-    response = api.get(url_api, headers=headers).json()
+        if code == 200:
+            new_weather = { 
+                'temperature': temperature, 
+                'description': description,
+                'created_date': now()
+            }
 
-    status_response = int(response['cod'])
+            weather, code = db.update(Weather, city_name, new_weather)
+            return weather.to_dict(), code
 
-    if status_response == 404:
-        return "Sorry. We couldn't find the specified city.", 404
+        new_weather = Weather(
+            city_name,
+            temperature,
+            description
+        )
 
-    description = response['weather'][0]['description']
-    temperature = response['main']['temp']
+        db.insert_one(new_weather)
 
-    weather = Weather(
-        city_name,
-        temperature,
-        description
-    )
-
-    db.insert_one(weather)
-
-    return weather.to_dict(), 200
+        return new_weather.to_dict(), 200
+    except:
+        return 'Sorry. There was an error on server, try again later.', 500
