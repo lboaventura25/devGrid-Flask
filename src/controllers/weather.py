@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import datetime
 
 from sqlalchemy.sql.functions import now
 from database.models import Weather
@@ -42,8 +42,8 @@ def get_weather_by_city_name(city_name: str) -> tuple:
         temperature = response['main']['temp']
 
         if code == 200:
-            new_weather = { 
-                'temperature': temperature, 
+            new_weather = {
+                'temperature': temperature,
                 'description': description,
                 'created_date': now()
             }

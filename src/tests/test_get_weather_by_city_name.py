@@ -1,4 +1,4 @@
-import datetime 
+import datetime
 from freezegun import freeze_time
 
 from controllers.weather import get_weather_by_city_name
@@ -13,7 +13,7 @@ def test_get_weather_by_city_name_create_in_less_than_5_minutes(mocker, mock_wea
         'controllers.weather.date_plus_five_minutes',
         return_value=datetime.datetime(2021, 8, 20, 9, 34, 40)
     )
-    
+
     expected = mock_weather.to_dict()
     response, code = get_weather_by_city_name('paris')
 
@@ -23,7 +23,7 @@ def test_get_weather_by_city_name_create_in_less_than_5_minutes(mocker, mock_wea
 
 @freeze_time('2021-08-20 09:36:44')
 def test_get_weather_by_city_name_create_in_bigger_than_5_minutes(
-    mocker, 
+    mocker,
     mock_weather,
     mock_return_weather_api,
     update_weather_mock,
@@ -43,7 +43,7 @@ def test_get_weather_by_city_name_create_in_bigger_than_5_minutes(
         'controllers.weather.db.update',
         return_value=(update_weather_mock, 200)
     )
-    
+
     expected = update_weather_mock.to_dict()
     response, code = get_weather_by_city_name('paris')
 
@@ -53,7 +53,7 @@ def test_get_weather_by_city_name_create_in_bigger_than_5_minutes(
 
 @freeze_time('2021-08-20 09:36:44')
 def test_get_weather_by_city_name_error_weather_api(
-    mocker, 
+    mocker,
     mock_weather,
     mock_return_weather_api_error,
 ):
@@ -68,7 +68,7 @@ def test_get_weather_by_city_name_error_weather_api(
         'controllers.weather.request_weather_api',
         return_value=mock_return_weather_api_error
     )
-    
+
     expected = "Sorry. We couldn't find the specified city."
     response, code = get_weather_by_city_name('paris')
 
@@ -78,7 +78,7 @@ def test_get_weather_by_city_name_error_weather_api(
 
 @freeze_time('2021-08-20 09:36:44')
 def test_get_weather_by_city_name_not_exist(
-    mocker, 
+    mocker,
     mock_weather,
     mock_return_weather_api,
     mock_weather_from_api
@@ -94,7 +94,7 @@ def test_get_weather_by_city_name_not_exist(
         'controllers.weather.request_weather_api',
         return_value=mock_return_weather_api
     )
-    
+
     expected = mock_weather_from_api.to_dict()
     response, code = get_weather_by_city_name('paris')
 
@@ -107,7 +107,7 @@ def test_get_weather_by_city_name_not_exist(
 
 @freeze_time('2021-08-20 09:36:44')
 def test_get_weather_by_city_name_not_exist_exception(
-    mocker, 
+    mocker,
     mock_weather,
 ):
     mocker.patch(
@@ -121,10 +121,9 @@ def test_get_weather_by_city_name_not_exist_exception(
         'controllers.weather.request_weather_api',
         return_value=Exception('Something went wrong')
     )
-    
+
     expected = 'Sorry. There was an error on server, try again later.'
     response, code = get_weather_by_city_name('paris')
 
     assert response == expected
     assert code == 500
-

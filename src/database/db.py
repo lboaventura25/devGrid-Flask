@@ -13,8 +13,8 @@ Session = sessionmaker(db)
 session = Session()
 
 
-# INSERT INTO weather (city_name, temperature, description) 
-# VALUES ('paris', 18.13, 'clean sky') 
+# INSERT INTO weather (city_name, temperature, description)
+# VALUES ('paris', 18.13, 'clean sky')
 def insert_one(element):
     try:
         session.add(element)
@@ -60,8 +60,8 @@ def get_one(model, identifier):
         return 'Something went wrong', 500
 
 
-# UPDATE weather 
-# SET temperature = 20.90, description = 'clean sky' 
+# UPDATE weather
+# SET temperature = 20.90, description = 'clean sky'
 # WHERE city_name = 'paris'
 def update(model, identifier, params):
     try:
@@ -71,7 +71,7 @@ def update(model, identifier, params):
         if data:
             for param in params:
                 setattr(data, param, params[param])
-        
+
             session.commit()
             return data, 200
 

@@ -1,12 +1,13 @@
 from flask import Blueprint, request
 from flask_cors import CORS
 
-from settings import logger 
 from controllers import weather as controller
 from utils.formatters import create_response
 
+
 weathers_blueprint = Blueprint('weather', __name__, url_prefix='/api')
 CORS(weathers_blueprint)
+
 
 @weathers_blueprint.route('/weather', methods=['GET'])
 def get_weathers():
